@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def calculate_internal_energy_change(heat_added, work_done) -> float:
+def calculate_internal_energy_change(heat_added, work_done):
     """
     Calculate change in internal energy using First Law of Thermodynamics
     
@@ -15,19 +15,43 @@ def calculate_internal_energy_change(heat_added, work_done) -> float:
     delta_u = heat_added - work_done
     return delta_u
 
-def ideal_gas_pressure(volume, moles, temperature, Z = 1.0) -> float:
+def ideal_gas_pressure(volume, moles, temperature, R=8.314):
     """
-    Calculate pressure of an ideal gas using the ideal gas law
+    Calculate pressure using the ideal gas law
     
     Parameters:
-    volume (float): Volume of the gas (L)
-    moles (float): Amount of gas (mol)
-    temperature (float): Temperature of the gas (K)
-    Z (float): Compressibility factor (default 1.0)
+    volume (float): Volume (m³)
+    moles (float): Number of moles of gas
+    temperature (float): Temperature (K)
+    R (float): Universal gas constant (J/(mol·K))
     
     Returns:
-    float: Pressure of the gas (Pa)
+    float: Pressure (Pa)
     """
-    R = 8.314
-    pressure = (Z * moles * R * temperature) / volume
+    pressure = (moles * R * temperature) / volume
     return pressure
+
+# Example: Calculate pressure at different volumes (simple P-V diagram)
+def plot_pv_diagram_isothermal(initial_volume, final_volume, moles, temperature, points=100):
+    """
+    Plot a P-V diagram for an isothermal process
+    """
+    volumes = np.linspace(initial_volume, final_volume, points)
+    pressures = [ideal_gas_pressure(v, moles, temperature) for v in volumes]
+    
+    plt.figure(figsize=(10, 6))
+    plt.plot(volumes, pressures)
+    plt.title('P-V Diagram for Isothermal Process')
+    plt.xlabel('Volume (m³)')
+    plt.ylabel('Pressure (Pa)')
+    plt.grid(True)
+    plt.show()
+    
+    # Calculate work done (area under the curve)
+    work = moles * 8.314 * temperature * np.log(final_volume / initial_volume)
+    print(f"Work done by the gas: {work:.2f} J")
+    
+    return work
+
+# Example usage
+plot_pv_diagram_isothermal(0.001, 0.002, 0.1, 500)
